@@ -1,0 +1,27 @@
+# build-yadoms-action github action
+
+This action allow to generate a yadoms build for Windows using Github Actions.
+
+## Inputs
+
+
+### `entrypoint`
+
+* optional * The entrypoint override (default : C:\entrypoint_docker.cmd)
+
+### `param1`, `param2`, `param3`, `param4`
+
+* optional * Free parameters passed to docker container
+
+## Outputs
+
+### `yadomsVersion`
+
+The current building yadoms full version, example : '2.5.0-beta.1'
+
+
+## Example usage
+
+- name: Yadoms build script
+  uses: Yadoms/build-yadoms-windows-action@v1.beta1
+  

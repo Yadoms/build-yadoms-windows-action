@@ -1,0 +1,61 @@
+# buildyadoms.yml
+name: 'Yadoms build script for Windows'
+description: 'Use to generate yadoms binaries for Windows, using docker images'
+inputs:
+  privileged: 
+    description: 'run container in privileged mode : setup to --privileged'
+    required: false
+    default: ''
+  param1: 
+    description: 'Generic parameter 1'
+    required: false
+    default: ''
+  param2: 
+    description: 'Generic parameter 1'
+    required: false
+    default: ''
+  param3: 
+    description: 'Generic parameter 3'
+    required: false
+    default: ''
+  param4: 
+    description: 'Generic parameter 4'
+    required: false
+    default: ''
+  entrypoint: 
+    description: 'entrypoint override'
+    required: false
+    default: 'C:/entrypoint_docker.cmd'
+  buildImage: 
+    description: 'The image to use for building yadoms'
+    required: true
+  username:
+    description: 'The docker hub/github package username'
+    required: false
+    default: ''
+  password:
+    description: 'The docker hub/github package password/token'
+    required: false
+    default: ''
+outputs:
+  yadomsVersion: 
+    description: 'Yadoms version'
+    value: ${{ steps.get-yadoms-version.outputs.yadomsVersion }}    
+runs:
+  using: "composite"
+  steps: 
+    - run: 'docker login --username ${{ inputs.username }} --password "${{ inputs.password }}"'
+      name : 'Login to docker'
+      shell: cmd
+    - run: 'docker run ${{inputs.privileged}}  -v %CD%:C:/work -e MAKE_PACKAGE=true -e PARAM1=${{ inputs.param1 }} -e PARAM2=${{ inputs.param2 }} -e PARAM3=${{ inputs.param3 }} -e PARAM4=${{ inputs.param4 }} ${{ inputs.buildImage }} ${{ inputs.entrypoint }}'
+      name : 'Build of Yadoms'
+      shell: cmd
+    - id: get-yadoms-version
+      run: Write-Host "::set-output name=yadomsVersion::$(Get-Content .\sources\server\changelog.md -First 1 | %{ $_.Split(' ')[1]; })"
+      name : 'Find yadoms version'
+      shell: powershell
+
+branding:
+  icon : home
+  color: blue
+  
