@@ -29,12 +29,16 @@ inputs:
   buildImage: 
     description: 'The image to use for building yadoms'
     required: true
+  registry:
+    description: 'The container registry '
+    required: false
+    default: ''
   username:
-    description: 'The docker hub/github package username'
+    description: 'The container registry username'
     required: false
     default: ''
   password:
-    description: 'The docker hub/github package password/token'
+    description: 'The container registry password/token'
     required: false
     default: ''
 outputs:
@@ -44,8 +48,8 @@ outputs:
 runs:
   using: "composite"
   steps: 
-    - run: 'docker login --username ${{ inputs.username }} --password "${{ inputs.password }}"'
-      name : 'Login to docker'
+    - run: 'echo "${{ inputs.password }}" |  docker login ${{ inputs.registry }} --username ${{ inputs.username }} --password-stdin'
+      name : 'Login to docker registry ${{ inputs.registry }}'
       shell: cmd
     - run: 'docker run ${{inputs.privileged}}  -v %CD%:C:/work -e MAKE_PACKAGE=true -e PARAM1=${{ inputs.param1 }} -e PARAM2=${{ inputs.param2 }} -e PARAM3=${{ inputs.param3 }} -e PARAM4=${{ inputs.param4 }} ${{ inputs.buildImage }} ${{ inputs.entrypoint }}'
       name : 'Build of Yadoms'
