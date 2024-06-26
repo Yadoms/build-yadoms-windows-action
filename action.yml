@@ -56,7 +56,7 @@ runs:
       shell: cmd
     - id: get-yadoms-version
       run: Write-Host "yadomsVersion=$(Get-Content .\sources\server\changelog.md -First 1 | %{ $_.Split(' ')[1]; })" >> $GITHUB_OUTPUT
-      name : 'Find yadoms version'
+      name : 'Find Yadoms version'
       shell: powershell
 
 branding:
